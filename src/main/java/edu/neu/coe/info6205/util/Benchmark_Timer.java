@@ -4,6 +4,9 @@
 
 package edu.neu.coe.info6205.util;
 
+import edu.neu.coe.info6205.sort.simple.InsertionSort;
+
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -125,4 +128,25 @@ public class Benchmark_Timer<T> implements Benchmark<T> {
     private final Consumer<T> fPost;
 
     final static LazyLogger logger = new LazyLogger(Benchmark_Timer.class);
+
+    public static void main(String[] args) {
+        Random random = new Random();
+        //random array
+        Integer[] arr1 = {random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),
+                random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000)};
+        //ordered array
+        Integer[] arr2 = {14,27,37,48,53,62,79,83,91,140};
+        //partially-ordered array
+        Integer[] arr3 = {2,35,62,35,52,42,275,72,97,13};
+        //reverse-ordered array
+        Integer[] arr4 = {982,842,742,425,363,283,132,94,62,34};
+
+        //
+
+       // InsertionSort insertionSort = new InsertionSort();
+        Supplier<InsertionSort> sort = () -> new InsertionSort();
+        Consumer<InsertionSort> insertionsort1 = sort1 -> sort1.sort(arr1,0,10);
+       Benchmark_Timer timer1 = new Benchmark_Timer("Sortarr1", insertionsort1);
+        System.out.println(timer1.runFromSupplier(sort,20));
+    }
 }
