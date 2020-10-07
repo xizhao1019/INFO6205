@@ -59,7 +59,7 @@ public class Timer {
             supplier.get();
             lap();
         }
-        return meanLapTime();
+        return toMillisecs(ticks) / laps;
     }
 
     /**

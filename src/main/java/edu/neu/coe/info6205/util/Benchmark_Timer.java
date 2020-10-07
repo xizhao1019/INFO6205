@@ -130,23 +130,62 @@ public class Benchmark_Timer<T> implements Benchmark<T> {
     final static LazyLogger logger = new LazyLogger(Benchmark_Timer.class);
 
     public static void main(String[] args) {
+        int length = 10000;
         Random random = new Random();
+
         //random array
-        Integer[] arr1 = {random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),
-                random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000),random.nextInt(1000)};
+        Integer[] arr1 = new Integer[length];
+        for (int i = 0; i < length; i++) {
+            arr1[i]=random.nextInt();
+        }
+
         //ordered array
-        Integer[] arr2 = {14,27,37,48,53,62,79,83,91,140};
+        Integer[] arr2 = new Integer[length];
+        for (int i = 0; i < length; i++) {
+            arr2[i]=i+1;
+        }
+
         //partially-ordered array
-        Integer[] arr3 = {2,35,62,35,52,42,275,72,97,13};
+        Integer[] arr3 = new Integer[length];
+        for (int i = 0; i < length/2; i++) {
+            arr3[i]=i+1;
+        }
+        for (int i = length/2; i < length; i++) {
+            arr3[i]= length*3/2 -i;
+        }
+
         //reverse-ordered array
-        Integer[] arr4 = {982,842,742,425,363,283,132,94,62,34};
+        Integer[] arr4 = new Integer[length];
+        for (int i = 0; i < length; i++) {
+            arr4[i]=length-i;
+        }
 
-        //
+        Supplier<Integer[]> supplier = new Supplier<Integer[]>() {
+            @Override
+            public Integer[] get() {
+                InsertionSort Sort = new InsertionSort();
+                Integer[] arr = new Integer[0];
+                Sort.sort(arr,0,arr.length);
+                return arr;
+            }
+        };
 
-       // InsertionSort insertionSort = new InsertionSort();
-        Supplier<InsertionSort> sort = () -> new InsertionSort();
-        Consumer<InsertionSort> insertionsort1 = sort1 -> sort1.sort(arr1,0,10);
-       Benchmark_Timer timer1 = new Benchmark_Timer("Sortarr1", insertionsort1);
-        System.out.println(timer1.runFromSupplier(sort,20));
+        Supplier<Integer[]> supplier1 = () -> arr1;
+        Supplier<Integer[]> supplier2 = () -> arr2;
+        Supplier<Integer[]> supplier3 = () -> arr3;
+        Supplier<Integer[]> supplier4 = () -> arr4;
+
+        Consumer consumer = (Supplier) -> supplier.get();
+
+        Benchmark_Timer timer1 = new Benchmark_Timer("InsertionSort-random array",consumer);
+        Benchmark_Timer timer2 = new Benchmark_Timer("InsertionSort-ordered array",consumer);
+        Benchmark_Timer timer3 = new Benchmark_Timer("InsertionSort-partially-ordered array",consumer);
+        Benchmark_Timer timer4 = new Benchmark_Timer("InsertionSort-reverse-ordered array",consumer);
+
+        System.out.println(timer1.runFromSupplier(supplier1,50));
+        System.out.println(timer2.runFromSupplier(supplier2,50));
+        System.out.println(timer3.runFromSupplier(supplier3,50));
+        System.out.println(timer4.runFromSupplier(supplier4,50));
+
     }
 }
